@@ -1,7 +1,7 @@
 # jchess
 A small chess game written in java, designed to be played in a CLI environment.
 
-The game is currently only playable locally between players. Feel free to create pull requests!
+The game is currently only playable locally between players.
 
 Notes:
 In order to use the save option, you need to create a savefiles folder in the root of the project.
@@ -21,3 +21,5 @@ Dependencies:
 JCDP by dialex
 
 Thanks to @dialex for sharing his work in JCDP to make colored printing in terminals a whole lot easier.
+
+Feel free to create pull requests!
