@@ -12,24 +12,23 @@ public class Game implements Serializable {
 
     private Player playerWhite;
     private Player playerBlack;
-    private AI AIWhite;
     private Board board;
     private transient Scanner keyboard;
     private String gameName;
 
-    private static int[] yCoordinates = {8, 7, 6, 5, 4, 3, 2, 1, 0};
-    private static Map<Character, Integer> xCoordinates;
+    private static int[] yCoordinatePlayerToBoardValue = {8, 7, 6, 5, 4, 3, 2, 1, 0};
+    private static Map<Character, Integer> xCoordinatePlayerToBoardValue;
     private boolean validMove;
     private Square sourceSquare;
     private Square targetSquare;
     private boolean playerEnded;
 
     static {
-        xCoordinates = new HashMap<>();
+        xCoordinatePlayerToBoardValue = new HashMap<>();
         int index = 0;
 
         for (char i = 'a'; i <= 'h'; i++) {
-            xCoordinates.put(i, index++);
+            xCoordinatePlayerToBoardValue.put(i, index++);
         }
     }
 
@@ -217,11 +216,11 @@ public class Game implements Serializable {
         int yAfterMovement = 0;
 
         try {
-            xBeforeMovement = getXOfCommand(commandWords[1]);
-            yBeforeMovement = getYOfCommand(commandWords[1]);
+            xBeforeMovement = getBoardXFromPlayerX(commandWords[1]);
+            yBeforeMovement = getBoardYFromPlayerY(commandWords[1]);
 
-            xAfterMovement = getXOfCommand(commandWords[2]);
-            yAfterMovement = getYOfCommand(commandWords[2]);
+            xAfterMovement = getBoardXFromPlayerX(commandWords[2]);
+            yAfterMovement = getBoardYFromPlayerY(commandWords[2]);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -258,12 +257,12 @@ public class Game implements Serializable {
         return true;
     }
 
-    public static int getXOfCommand(String command) {
-        return xCoordinates.get(command.charAt(0));
+    public static int getBoardXFromPlayerX(String command) {
+        return xCoordinatePlayerToBoardValue.get(command.charAt(0));
     }
 
-    public static int getYOfCommand(String command) {
-        return yCoordinates[Integer.parseInt(command.substring(1, 2))];
+    public static int getBoardYFromPlayerY(String command) {
+        return yCoordinatePlayerToBoardValue[Integer.parseInt(command.substring(1, 2))];
     }
 
     public Board getBoard() {
