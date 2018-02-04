@@ -2,17 +2,17 @@ import java.util.List;
 
 public class Queen extends Piece {
 
-	public Queen(Color color) {
-		super(color);
-	}
+    public Queen(Color color) {
+        super(color);
+    }
 
-	@Override
-	public char getShortNotation() {
-		return 'Q';
-	}
+    @Override
+    public char getShortNotation() {
+        return 'Q';
+    }
 
-	@Override
-	public List<Square> getListOfMovableSquares(Square location, Board board) {
+    @Override
+    public List<Square> getListOfMovableSquares(Square location, Board board) {
         listOfMovableSquares.clear();
 
         super.addMultipleSquaresFromDirection(location, board, Direction.LEFT);
@@ -25,7 +25,7 @@ public class Queen extends Piece {
         super.addMultipleSquaresFromDirection(location, board, Direction.DOWNRIGHT);
 
         return listOfMovableSquares;
-	}
+    }
 
 
 }

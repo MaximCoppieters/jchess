@@ -1,17 +1,18 @@
-public enum Option {
+import java.io.Serializable;
+
+public enum MenuOption implements Serializable {
     PVP("You can start playing a new player vs player game with the following format: \n " +
-            "new pvp <gamename>"),
+            "pvp <gamename>"),
     PVE("You can start playing a player vs npc game with the following format: \n" +
-            "new pve <gamename>"),
+            "pve <gamename>"),
     HELP("Shows this help dump"),
     LOAD("You can also load a game with the following format: \n" +
             "load <gamename>"),
-    SAVE("While playing a game, you can save it by simply typing save"),
     EXIT("Closes the game with or without having saved");
 
     private String description;
 
-    private Option(String description){
+    MenuOption(String description) {
         this.description = description;
     }
 
@@ -20,13 +21,13 @@ public enum Option {
         return description;
     }
 
-    public static Option getOptionByString(String actionWord) {
-        for(Option option : values()) {
-            if(actionWord.toUpperCase().equals(option.name())){
-                return option;
+    public static MenuOption getOptionByString(String actionWord) {
+        for (MenuOption menuOption : values()) {
+            if (actionWord.toUpperCase().equals(menuOption.name())) {
+                return menuOption;
             }
         }
 
-        throw new IllegalArgumentException("Option not found!");
+        throw new IllegalArgumentException("MenuOption not found!");
     }
 }
