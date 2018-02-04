@@ -68,18 +68,12 @@ public class Board implements Serializable {
                         if (blackPrinter == null) {
                             blackPrinter = createColoredPrinter();
                         }
-                        blackPrinter.setAttribute(Ansi.Attribute.BOLD);
-                        blackPrinter.setForegroundColor(Ansi.FColor.BLACK);
-                        blackPrinter.print(square.getOccupationCharacter());
-                        blackPrinter.clear();
+                        writeCharacterInColor(Ansi.FColor.BLACK, square);
                     } else {
                         if (whitePrinter == null) {
                             whitePrinter = createColoredPrinter();
                         }
-                        whitePrinter.setAttribute(Ansi.Attribute.BOLD);
-                        whitePrinter.setForegroundColor(Ansi.FColor.WHITE);
-                        whitePrinter.print(square.getOccupationCharacter());
-                        whitePrinter.clear();
+                        writeCharacterInColor(Ansi.FColor.WHITE, square);
                     }
                 } else {
                     System.out.print(square.getOccupationCharacter());
@@ -91,6 +85,13 @@ public class Board implements Serializable {
             drawFullLine();
             index--;
         }
+    }
+
+    private void writeCharacterInColor(Ansi.FColor color, Square square) {
+        whitePrinter.setAttribute(Ansi.Attribute.BOLD);
+        whitePrinter.setForegroundColor(color);
+        whitePrinter.print(square.getOccupationCharacter());
+        whitePrinter.clear();
     }
 
     private void drawFullLine() {
@@ -119,17 +120,20 @@ public class Board implements Serializable {
     public void placePieces() {
         int indexWhite = 0;
         int indexBlack = 0;
+        Piece pieceToOccupy;
 
         for (int y = 0; y < 2; y++) {
             for (Square square : board[y]) {
-                square.setOccupyingPiece(whitePieces.get(indexWhite));
+                pieceToOccupy = whitePieces.get(indexWhite);
+                square.setOccupyingPiece(pieceToOccupy);
                 ++indexWhite;
             }
         }
 
         for (int y = 6; y < board.length; y++) {
             for (Square square : board[y]) {
-                square.setOccupyingPiece(blackPieces.get(indexBlack));
+                pieceToOccupy = blackPieces.get(indexBlack);
+                square.setOccupyingPiece(pieceToOccupy);
                 ++indexBlack;
             }
         }

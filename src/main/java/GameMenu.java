@@ -15,16 +15,16 @@ public class GameMenu implements Serializable {
     private static Game currentGame = null;
 
     public static void main(String[] args) {
-        MenuOption menuOptionToExecute = null;
+        Command commandToExecute = null;
 
         System.out.println("Welcome to jchess, a small chess game designed to be played in commandline");
         System.out.println("What would you like to do? (type help for options)");
         String actionWords[] = getPlayerActionSeparated();
-        menuOptionToExecute = getMenuOptionFromAction(actionWords);
+        commandToExecute = getMenuOptionFromAction(actionWords);
 
-        while (menuOptionToExecute != MenuOption.EXIT) {
+        while (commandToExecute != Command.QUIT) {
             String gameName = null;
-            switch (menuOptionToExecute) {
+            switch (commandToExecute) {
                 case PVE:
                     try {
                         gameName = actionWords[1];
@@ -45,9 +45,9 @@ public class GameMenu implements Serializable {
                     }
                     break;
                 case HELP:
-                    printOptions();
+                    Command.printOptions(false);
                     break;
-                case EXIT:
+                case QUIT:
                     return;
                 case LOAD:
                     try {
@@ -57,15 +57,19 @@ public class GameMenu implements Serializable {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.out.println("LOAD option structure is wrong, type \"load <gamename>\"");
                     } catch (IOException ioe) {
-                        ioe.printStackTrace();
+                        System.out.println("Target savefile is not present in the savefiles folder");
                     } catch (ClassNotFoundException cnfe) {
-                        cnfe.printStackTrace();
+                        System.out.println("The game you are trying to load is not compatible with the current version");
                     }
+                case SAVE:
+                case MOVE:
+                case SURRENDER:
+                    System.out.println("The command you entered can only be used whilst in-game!");
             }
 
             System.out.println("What would you like to do? (type help for options)");
             actionWords = getPlayerActionSeparated();
-            menuOptionToExecute = getMenuOptionFromAction(actionWords);
+            commandToExecute = getMenuOptionFromAction(actionWords);
         }
 
         keyboard.close();
@@ -76,22 +80,22 @@ public class GameMenu implements Serializable {
     }
 
 
-    public static MenuOption getMenuOptionFromAction(String[] actionWords) {
+    public static Command getMenuOptionFromAction(String[] actionWords) {
         boolean correctOption = false;
-        MenuOption menuOptionToExecute = null;
+        Command commandToExecute = null;
 
         while (correctOption == false) {
             try {
-                menuOptionToExecute = MenuOption.getOptionByString(actionWords[0]);
+                commandToExecute = Command.getOptionByString(actionWords[0]);
                 correctOption = true;
             } catch (IllegalArgumentException iae) {
                 System.out.println("Menu option doesn't exist, try again!");
                 actionWords = getPlayerActionSeparated();
-                menuOptionToExecute = MenuOption.getOptionByString(actionWords[0]);
+                commandToExecute = Command.getOptionByString(actionWords[0]);
             }
         }
 
-        return menuOptionToExecute;
+        return commandToExecute;
     }
 
     private static Game loadGame(String gameName) throws IOException, ClassNotFoundException {
@@ -107,8 +111,8 @@ public class GameMenu implements Serializable {
 
 
     private static void printOptions() {
-        for (MenuOption menuOption : MenuOption.values()) {
-            System.out.println(menuOption);
+        for (Command command : Command.values()) {
+            System.out.println(command);
         }
     }
 

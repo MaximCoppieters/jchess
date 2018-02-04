@@ -7,6 +7,7 @@ public class Player implements Serializable {
     private List<Piece> pieces;
     private boolean isPlayerTurn;
     private static final int PAWN_COUNT = 8;
+    protected Board gameBoard;
 
     public Player(Color color) {
         this.color = color;
@@ -73,5 +74,9 @@ public class Player implements Serializable {
 
     public Color getColor() {
         return color;
+    }
+
+    public void setGameBoard(Board gameBoard) {
+        this.gameBoard = gameBoard;
     }
 }

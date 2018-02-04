@@ -12,6 +12,7 @@ public class Game implements Serializable {
 
     private Player playerWhite;
     private Player playerBlack;
+    private AI AIWhite;
     private Board board;
     private transient Scanner keyboard;
     private String gameName;
@@ -49,6 +50,9 @@ public class Game implements Serializable {
         board.placePieces();
         board.drawBoard();
 
+        playerWhite.setGameBoard(board);
+        playerBlack.setGameBoard(board);
+
         playerWhite.setPlayerTurn(true);
     }
 
@@ -78,9 +82,9 @@ public class Game implements Serializable {
 
     private void play() {
         keyboard = new Scanner(System.in);
-        GameOption gameOptionToExecute = null;
+        Command commandToExecute = null;
 
-        while (gameOptionToExecute != GameOption.QUIT) {
+        while (commandToExecute != Command.QUIT) {
             if (playerWhite.getPlayerTurn()) {
 
                 playerDoTurn(playerWhite);
@@ -103,14 +107,14 @@ public class Game implements Serializable {
     }
 
     private void playerDoTurn(Player playerToMove) {
-        GameOption gameOptionToExecute = null;
+        Command commandToExecute = null;
         System.out.println("It's player " + playerToMove.getColor().name().toLowerCase() + "'s turn, what is your action?");
         String actionWords[] = getPlayerActionSeparated();
-        gameOptionToExecute = getMenuOptionFromAction(actionWords);
+        commandToExecute = getCommandFromAction(actionWords);
         validMove = false;
 
         while (validMove == false) {
-            switch (gameOptionToExecute) {
+            switch (commandToExecute) {
                 case SURRENDER:
                     playerToMove.setKingCaptured(true);
                     return;
@@ -118,7 +122,7 @@ public class Game implements Serializable {
                     saveGame();
                     break;
                 case HELP:
-                    printOptions();
+                    Command.printOptions(true);
                     break;
                 case QUIT:
                     playerEnded = true;
@@ -139,11 +143,16 @@ public class Game implements Serializable {
                         System.out.println(ime.getMessage());
                         System.out.println("Try again");
                     }
+                    break;
+                case PVP:
+                case PVE:
+                case LOAD:
+                    System.out.println("The command you entered is a menu command, it's not usable in game");
             }
 
             System.out.println("What would you like to do? (type help for options)");
             actionWords = getPlayerActionSeparated();
-            gameOptionToExecute = getMenuOptionFromAction(actionWords);
+            commandToExecute = getCommandFromAction(actionWords);
         }
     }
 
@@ -161,24 +170,18 @@ public class Game implements Serializable {
         }
     }
 
-    private static void printOptions() {
-        for (GameOption gameOption : GameOption.values()) {
-            System.out.println(gameOption);
-        }
-    }
-
-    public GameOption getMenuOptionFromAction(String[] actionWords) {
+    public Command getCommandFromAction(String[] actionWords) {
         boolean correctOption = false;
-        GameOption gameOptionToExecute = null;
+        Command gameOptionToExecute = null;
 
         while (correctOption == false) {
             try {
-                gameOptionToExecute = GameOption.getOptionByString(actionWords[0]);
+                gameOptionToExecute = Command.getOptionByString(actionWords[0]);
                 correctOption = true;
             } catch (IllegalArgumentException iae) {
                 System.out.println("Menu option doesn't exist, try again!");
                 actionWords = getPlayerActionSeparated();
-                gameOptionToExecute = GameOption.getOptionByString(actionWords[0]);
+                gameOptionToExecute = Command.getOptionByString(actionWords[0]);
             }
         }
 
@@ -205,7 +208,7 @@ public class Game implements Serializable {
         sourceSquare.setOccupyingPiece(null);
     }
 
-    public boolean isMoveValid(String[] commands, Player actingPlayer)
+    public boolean isMoveValid(String[] commandWords, Player actingPlayer)
             throws InvalidMoveException {
 
         int xBeforeMovement = 0;
@@ -214,11 +217,11 @@ public class Game implements Serializable {
         int yAfterMovement = 0;
 
         try {
-            xBeforeMovement = getXOfCommand(commands[1]);
-            yBeforeMovement = getYOfCommand(commands[1]);
+            xBeforeMovement = getXOfCommand(commandWords[1]);
+            yBeforeMovement = getYOfCommand(commandWords[1]);
 
-            xAfterMovement = getXOfCommand(commands[2]);
-            yAfterMovement = getYOfCommand(commands[2]);
+            xAfterMovement = getXOfCommand(commandWords[2]);
+            yAfterMovement = getYOfCommand(commandWords[2]);
 
         } catch (Exception e) {
             e.printStackTrace();

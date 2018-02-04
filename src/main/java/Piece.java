@@ -6,7 +6,8 @@ public abstract class Piece implements Movable, Serializable {
     private Color color;
     private boolean captured;
     public List<Square> listOfMovableSquares;
-    private final String ANSI_COLOR = determineAnsiColor();
+    private Board gameBoard;
+    private Square squareLocatedOn;
 
     public Piece(Color color) {
         listOfMovableSquares = new ArrayList<>();
@@ -91,15 +92,12 @@ public abstract class Piece implements Movable, Serializable {
         return isCaptured();
     }
 
-    public String determineAnsiColor() {
-        if (color == Color.BLACK) {
-            return "\u001B[36m";
-        } else {
-            return "\u001B[37m";
-        }
+    public Square getSquareLocatedOn() {
+        return squareLocatedOn;
     }
 
-    public String getAnsiColor() {
-        return ANSI_COLOR;
+    public void setSquareLocatedOn(Square squareLocatedOn) {
+        this.squareLocatedOn = squareLocatedOn;
     }
+
 }
